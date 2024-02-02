@@ -51,6 +51,12 @@ gem 'local_time', '~> 1.0.3'
 gem 'zip_tricks', '~> 5.5'
 gem 'rss', '~> 0.2'
 
+# This is an optional group because the acl gem requires libacl to compile against which 
+# is not guaranteed 
+group :acl do
+  gem 'acl', '~> 0.2'
+end
+
 gem 'jsbundling-rails', '~> 1.0'
 gem 'cssbundling-rails', '~> 1.1'
 
@@ -66,4 +72,3 @@ gem "sinatra", require: false
 gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
-

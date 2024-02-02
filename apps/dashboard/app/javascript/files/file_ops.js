@@ -3,7 +3,7 @@ import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
-import { transfersPath, csrfToken } from '../config.js';
+import { transfersPath, csrfToken, configData } from '../config.js';
 
 export {EVENTNAME};
 
@@ -15,6 +15,8 @@ const EVENTNAME = {
   createDirectory: 'createDirectory',
   deleteFile: 'deleteFile',
   deletePrompt: 'deletePrompt',
+  editAccess: 'editAccess',
+  editAccessPrompt: 'editAccessPrompt',
   download: 'download',
   moveFile: 'moveFile',
   newFile: 'newFile',
@@ -71,6 +73,20 @@ jQuery(function() {
     $(CONTENTID).trigger(EVENTNAME.download, eventData);
   });
 
+  $('#directory-contents tbody').on('click', '.edit-file-access', function(e){
+    e.preventDefault();
+
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+
+    const eventData = {
+        file: row.url,
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.editAccessPrompt, eventData);
+  });
+
   $("#refresh-btn").on("click", function () {
     $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable);
   });
@@ -87,7 +103,7 @@ jQuery(function() {
     let table = $(CONTENTID).DataTable();
     let selection = table.rows({ selected: true }).data();
     const eventData = {
-        selection: selection
+        file: selection
     };
 
     $(CONTENTID).trigger(EVENTNAME.download, eventData);
@@ -212,6 +228,9 @@ jQuery(function() {
     fileOps.changeDirectory(options.result.value);
   });
 
+  $(CONTENTID).on(EVENTNAME.editAccessPrompt, function (e, options) {
+    fileOps.editAccessPrompt(options.file);
+  });
 });
 
 class FileOps {
@@ -624,4 +643,14 @@ class FileOps {
     $(CONTENTID).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
   }
 
+  editAccessPrompt(fileUrl) {
+//  configData().permissionsPath.replace("PLACEHOLDER", fileUrl);
+    // Show the edit dialogue
+    $('#acl_edit').modal();
+    const permissionUrl = fileUrl.replace(/^\/files/, "/permissions");
+    // const permissionUrl = fileUrl.replace(/^\/files/, "/permissions/edit");
+    $.get({url: permissionUrl, dataType: "json"}).then(result => {
+      console.log(result);
+    })
+  }
 }

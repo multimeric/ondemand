@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    acl (0.2)
     actioncable (6.1.7.6)
       actionpack (= 6.1.7.6)
       activesupport (= 6.1.7.6)
@@ -275,6 +276,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acl (~> 0.2)
   addressable (~> 2.4)
   autoprefixer-rails (~> 10.2.5)
   bootstrap_form (~> 4.0)

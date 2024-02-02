@@ -24,6 +24,11 @@ Rails.application.routes.draw do
       # and are used by File Editor and Job Composer
       get "files/api/v1/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false
       put "files/api/v1/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
+
+      # ACL editor
+      get "permissions/edit/:fs/(*filepath)" => "permissions#edit", defaults: { :fs => 'fs', :filepath => "/" , :format => 'json' }, format: false, as: "edit_facl"
+      get "permissions/:fs/(*filepath)" => "permissions#show", defaults: { :fs => 'fs', :filepath => "/" , :format => 'json' }, format: false, as: "show_facl"
+      patch "permissions/:fs/*filepath" => "permissions#update", defaults: { :fs => 'fs', :filepath => "/" , :format => 'json' }, format: false, as: "facl"
     end
     post "files/upload/:fs" => "files#upload", :defaults => { :fs => 'fs' } if Configuration.upload_enabled?
 
@@ -32,7 +37,7 @@ Rails.application.routes.draw do
     resources :transfers, only: [:show, :create, :destroy]
   end
 
-  if  Configuration.can_access_file_editor?
+  if Configuration.can_access_file_editor?
     # App file editor
     get "files/edit/:fs/*filepath" => "files#edit", defaults: { :fs => 'fs', :path => "/" , :format => 'html' }, format: false
     get "files/edit/:fs" => "files#edit", :defaults => { :fs => 'fs', :path => "/", :format => 'html' }, format: false

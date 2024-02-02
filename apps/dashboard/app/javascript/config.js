@@ -54,5 +54,6 @@ export {
   transfersPath,
   jobsInfoPath,
   csrfToken,
-  uppyLocale
+  uppyLocale,
+  configData
 };
